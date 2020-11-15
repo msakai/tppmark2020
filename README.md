@@ -105,8 +105,6 @@ Totalizer符号化による基数制約の符号化、Tseitin符号化、およ�
 > 
 > The general case is very difficult. The constitution of such a set of vectors for a particular n (> 3) is also welcome.
 
-n = 4 の場合について、基数制約は加えずに問2と同様のアプローチを試みたが、解を得ることが出来なかった。
+n = 4 の場合について、基数制約は加えずに問2と同様のアプローチを試みた(QDIMACSファイルは[Q3_4.qdimacs](Q3_4.qdimacs))が、解を得ることが出来なかった。
 
 プログラム中の `solveQ3` 関数が該当箇所である。
-
-
