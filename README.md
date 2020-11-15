@@ -36,6 +36,57 @@ SATソルバは一瞬でUNSATという結果を返すため、そのような塗
 > Reduce as many elements as possible from the set of vectors X such that at least one of the conditions a) and b) does not hold while condition c) is satisfied. (Hint: It is known that you can reduce the number to 33.)
 > - c) There is at least one set of three mutually orthogonal vectors in the set. 
 
+まず、 X の各要素pが減らした結果の集合 X'⊆X に含まれるか否かを論理変数 X'(p) によって表すこととする。
+
+次に、条件 a,b,c) は以下のような命題論理式で表すことができる。
+* a(X', white) := ∧_{(p1,p2) ∈ "orthogonal vectors of X"} (X'(p1) ∧ X'(p2) → (¬white(p1) ∨ ¬white(p2)))
+* b(X', white) := ∧_{(p1,p2,p3)∈"three mutually orthogonal vectors of X"} (X'(p1) ∧ X'(p2) ∧ X'(p3) → (white(p1) ∨ white(p2) ∨ white(p3)))
+* c(X') := ∨_{(p1,p2,p3)∈"three mutually orthogonal vectors of X"} X'(p1)∧X'(p2)∧X'(p3)
+
+すると、問題は c(X') ∧ (∀white. ¬a(X', white) ∨ ¬b(X', white)) を満たす X'(p) の割当てのうち、真になっている X'(p) が最小のものを探す問題となる。
+
+また、「33本までは減らせる」ことがヒントとして与えられているので、 基数成約 |X'| ≤ 33 も制約条件に加える。
+
+Totalizer符号化による基数制約の符号化、Tseitin符号化、および冠頭標準形への変換を行った上で、QBFソルバ[caqe](https://github.com/ltentrup/caqe/tree/0543174f6c8c624ba37db80d13479c0408d7384e/)を用いて解いたところ、|X'| = 33 である以下の解が得られた。
+
+* (-√2, -1, -1)
+* (-√2, -1, 0)
+* (-√2, -1, 1)
+* (-√2, 0, -√2)
+* (-√2, 0, -1)
+* (-√2, 0, 0)
+* (-√2, 1, -1)
+* (-√2, 1, 0)
+* (-1, -√2, 0)
+* (-1, -1, √2)
+* (-1, 0, -√2)
+* (-1, 0, 1)
+* (-1, 0, √2)
+* (-1, 1, -√2)
+* (-1, 1, √2)
+* (-1, √2, -1)
+* (0, -√2, -√2)
+* (0, -√2, -1)
+* (0, -√2, 1)
+* (0, -1, -√2)
+* (0, -1, 0)
+* (0, -1, 1)
+* (0, 0, 1)
+* (0, 1, -√2)
+* (1, -√2, -1)
+* (1, -√2, 0)
+* (1, 1, 0)
+* (1, 1, √2)
+* (1, √2, -1)
+* (1, √2, 1)
+* (√2, -√2, 0)
+* (√2, -1, -1)
+* (√2, 0, -1)
+
+次に基数制約を |X'| ≤ 33 に変更したところ、数時間程度では解を得ることが出来なかった。
+
+プログラムでは `solveQ2` 関数が該当箇所である。
+
 ### 問3.
 
 > より一般的に n 次元 (n > 3) の場合に拡張してください．
