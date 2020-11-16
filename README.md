@@ -47,7 +47,7 @@ SATソルバは一瞬でUNSATという結果を返すため、そのような塗
 
 また、「33本までは減らせる」ことがヒントとして与えられているので、 基数成約 |X'| ≤ 33 も制約条件に加える。
 
-Totalizer符号化による基数制約の符号化、Tseitin符号化、および冠頭標準形への変換を行ってQDIMACS形式の論理式 [Q2_33.qdimacs](Q2_33.qdimacs) を生成し、QBFソルバ[caqe](https://github.com/ltentrup/caqe/tree/0543174f6c8c624ba37db80d13479c0408d7384e/)を用いて解いたところ、|X'| = 33 である以下の解が得られた。
+Totalizer符号化[1]による基数制約の符号化、Tseitin符号化、および冠頭標準形への変換を行ってQDIMACS形式の論理式 [Q2_33.qdimacs](Q2_33.qdimacs) を生成し、QBFソルバ[caqe](https://github.com/ltentrup/caqe/tree/0543174f6c8c624ba37db80d13479c0408d7384e/)を用いて解いたところ、|X'| = 33 である以下の解が得られた。
 
 * (-√2, -1, -1)
 * (-√2, -1, 0)
@@ -109,3 +109,8 @@ Totalizer符号化による基数制約の符号化、Tseitin符号化、およ�
 n = 4 の場合について、基数制約は加えずに問2と同様のアプローチを試みた(QDIMACSファイルは[Q3_4.qdimacs](Q3_4.qdimacs))が、解を得ることが出来なかった。
 
 プログラム中の `solveQ3` 関数が該当箇所である。
+
+# References
+
+* [1] O. Bailleux and Y. Boufkhad, “Efficient cnf encoding of boolean cardinality constraints,” in Principles and Practice of Constraint Programming –
+CP 2003, F. Rossi, Ed. Berlin, Heidelberg: Springer Berlin Heidelberg, 2003, pp. 108–122.
