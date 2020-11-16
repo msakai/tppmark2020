@@ -38,7 +38,7 @@ SATソルバは一瞬でUNSATという結果を返すため、そのような塗
 
 まず、 X の各要素pが減らした結果の集合 X'⊆X に含まれるか否かを論理変数 X'(p) によって表すこととする。
 
-次に、条件 a,b,c) は以下のような命題論理式で表すことができる。
+次に、条件 a), b), c) は以下のような命題論理式で表すことができる。
 * a(X', white) := ∧_{(p1,p2) ∈ "orthogonal vectors of X"} (X'(p1) ∧ X'(p2) → (¬white(p1) ∨ ¬white(p2)))
 * b(X', white) := ∧_{(p1,p2,p3)∈"three mutually orthogonal vectors of X"} (X'(p1) ∧ X'(p2) ∧ X'(p3) → (white(p1) ∨ white(p2) ∨ white(p3)))
 * c(X') := ∨_{(p1,p2,p3)∈"three mutually orthogonal vectors of X"} X'(p1)∧X'(p2)∧X'(p3)
@@ -83,7 +83,7 @@ Totalizer符号化による基数制約の符号化、Tseitin符号化、およ�
 * (√2, -1, -1)
 * (√2, 0, -1)
 
-次に基数制約を |X'| ≤ 33 に変更した(QDIMACSファイルは[Q2_32.qdimacs](Q2_32.qdimacs))ところ、数時間程度では解を得ることが出来なかった。
+次に基数制約を |X'| ≤ 32 に変更した(QDIMACSファイルは[Q2_32.qdimacs](Q2_32.qdimacs))ところ、数時間程度では解を得ることが出来なかった。
 
 プログラムでは `solveQ2` 関数が該当箇所である。
 
