@@ -1,0 +1,28 @@
+name:                tppmark2020
+version:             0.1.0.0
+github:              "msakai/tppmark2020"
+license:             BSD3
+author:              "Masahiro Sakai"
+maintainer:          "masahiro.sakai@gmail.com"
+copyright:           "2020 Masahiro Sakai"
+
+extra-source-files:
+- README.md
+
+# Metadata used when publishing your package
+synopsis:            An attempt to solve TPPmark problem of the 16th Theorem Proving and Provers meeting (TPP 2020)
+category:            Math
+
+# To avoid duplicated efforts in documentation and dealing with the
+# complications of embedding Haddock markup inside cabal files, it is
+# common to point users to the README.md file.
+description:         Please see the README on GitHub at <https://github.com/msakai/tppmark2020/tree/master/MIP#readme>
+
+dependencies:
+- base >=4.7 && < 5
+- containers >=0.5.0 && <0.7.0
+- process >=1.4.0 && <1.7.0
+- toysolver >=0.7.0 && <0.8.0
+
+library:
+  source-dirs: .
