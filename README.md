@@ -39,9 +39,9 @@ SATソルバは一瞬でUNSATという結果を返すため、そのような塗
 まず、 X の各要素pが減らした結果の集合 X'⊆X に含まれるか否かを論理変数 X'(p) によって表すこととする。
 
 次に、条件 a), b), c) は以下のような命題論理式で表すことができる。
-* a(X', white) := ∧_{(p1,p2) ∈ "orthogonal vectors of X"} (X'(p1) ∧ X'(p2) → (¬white(p1) ∨ ¬white(p2)))
-* b(X', white) := ∧_{(p1,p2,p3)∈"three mutually orthogonal vectors of X"} (X'(p1) ∧ X'(p2) ∧ X'(p3) → (white(p1) ∨ white(p2) ∨ white(p3)))
-* c(X') := ∨_{(p1,p2,p3)∈"three mutually orthogonal vectors of X"} X'(p1)∧X'(p2)∧X'(p3)
+* a(X', white) := ∧<sub>(p1,p2) ∈ "orthogonal vectors of X"</sub> (X'(p1) ∧ X'(p2) → ¬white(p1) ∨ ¬white(p2))
+* b(X', white) := ∧<sub>(p1,p2,p3)∈"three mutually orthogonal vectors of X"}</sub> (X'(p1) ∧ X'(p2) ∧ X'(p3) → white(p1) ∨ white(p2) ∨ white(p3))
+* c(X') := ∨<sub>(p1,p2,p3)∈"three mutually orthogonal vectors of X"</sub> (X'(p1) ∧ X'(p2) ∧ X'(p3))
 
 すると、問題は c(X') ∧ (∀white. ¬a(X', white) ∨ ¬b(X', white)) を満たす X'(p) の割当てのうち、真になっている X'(p) が最小のものを探す問題となる。
 
