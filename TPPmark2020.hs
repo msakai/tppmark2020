@@ -3,6 +3,8 @@ module TPPmark2020 where
 
 import Control.Monad
 import Control.Monad.ST
+import Data.IntMap.Strict (IntMap)
+import qualified Data.IntMap.Strict as IntMap
 import Data.IntSet (IntSet)
 import qualified Data.IntSet as IntSet
 import Data.List
@@ -11,6 +13,7 @@ import Data.Map.Strict (Map, (!))
 import qualified Data.Map.Strict as Map
 import System.Exit
 import System.Process
+import Text.Printf
 
 import qualified ToySolver.SAT as SAT
 import qualified ToySolver.SAT.Encoder.Cardinality as Card
@@ -213,6 +216,43 @@ encodeQ3Matrix db n points = do
 
   return (isX, isWhite, flag : vsNotA ++ vsNotB)
 
+encodeQ3GCNF :: Int -> [Point] -> (CNF.GCNF, Map Point Int)
+encodeQ3GCNF n points = runST $ do
+  db <- SAT.newCNFStore
+
+  vsX <- SAT.newVars db (length points)
+  let isX :: Map Point SAT.Var
+      isX = Map.fromList $ zip points vsX
+
+  vsWhite <- SAT.newVars db (length points)
+  let isWhite :: Map Point SAT.Var
+      isWhite = Map.fromList $ zip points vsWhite
+
+  -- c’) There exists at least one set of n vectors in the set that are mutually orthogonal to each other.
+  vsT <- forM (orthogonal_tuples n points) $ \ps -> do
+    v <- SAT.newVar db
+    forM_ ps $ \p -> SAT.addClause db [-v, isX ! p]
+    return (ps, v)
+  SAT.addClause db (map snd vsT)
+
+  -- a) Whenever two of the vectors are orthogonal, at least one is black.
+  forM_ (orthogonal_pairs points) $ \(p1,p2) -> do
+    SAT.addClause db [- (isX ! p1), - (isX ! p2), - (isWhite ! p1), - (isWhite ! p2)]
+  -- b’) Whenever n vectors are mutually orthogonal, at least one is white.
+  forM_ (orthogonal_tuples n points) $ \ps -> do
+    SAT.addClause db $ [- (isX ! p) | p <- ps] ++ [isWhite ! p | p <- ps]
+
+  cnf <- SAT.getCNFFormula db
+  let gcnf =
+        CNF.GCNF
+        { CNF.gcnfNumVars = CNF.cnfNumVars cnf
+        , CNF.gcnfNumClauses = CNF.cnfNumClauses cnf + length points
+        , CNF.gcnfLastGroupIndex = length points
+        , CNF.gcnfClauses = [(0, c) | c <- CNF.cnfClauses cnf] ++ [(i, SAT.packClause [isX ! p]) | (i,p) <- zip [1..] points]
+        }
+
+  return (gcnf, Map.fromList (zip points [1..]))
+
 -- ------------------------------------------------------------------------
 
 solveQ2 :: IO ()
@@ -271,6 +311,69 @@ solveQ2' ub = do
     putStrLn $ "#X = " ++ show (length points')
     forM_ points' $ \p -> do
       putStrLn (showPoint p)
+
+solveQ2MUS :: IO ()
+solveQ2MUS = do
+  let n = 3
+      (gcnf, m) = encodeQ3GCNF n (points n)
+  FF.writeFile "Q2.gcnf" gcnf
+
+  putStrLn "Group id to point mapping:"
+  forM_ (Map.toList m) $ \(p, i) -> do
+    putStrLn $ show i ++ ": " ++ showPoint p
+
+  putStrLn ""
+
+  -- q2MCSes are obtained using "toysat --all-mus --all-mus-method camus Q2.gcnf"
+  let m2 = IntMap.fromList [(i, p) | (p, i) <- Map.toList m]
+  if and [IntSet.null (IntSet.intersection s1 s2) | (s1,s2) <- pairs q2MCSes] then
+    putStrLn "MCS are all disjoint"
+  else
+    undefined
+  putStrLn "MCS:"
+  forM_ (zip [(1::Int)..] q2MCSes) $ \(i, mcs) -> do
+    putStrLn $ show i ++ ": " ++ intercalate ", " [showPoint (m2 IntMap.! j) | j <- IntSet.toList mcs]
+
+  putStrLn ""
+  printf "There are %d minimal solutions\n" $ product (map (toInteger . IntSet.size) q2MCSes)
+
+q2MCSes
+ :: [IntSet]
+q2MCSes = map IntSet.fromList $
+  [ [27, 98]
+  , [41, 84]
+  , [19, 106]
+  , [17, 108]
+  , [49, 76]
+  , [35, 90]
+  , [31, 94]
+  , [29, 96]
+  , [45, 80]
+  , [7, 118]
+  , [47, 78]
+  , [9, 116]
+  , [56, 69]
+  , [28, 97]
+  , [14, 111]
+  , [40, 85]
+  , [48, 77]
+  , [18, 107]
+  , [12, 113]
+  , [60, 65]
+  , [54, 71]
+  , [52, 73]
+  , [36, 89]
+  , [8, 117]
+  , [15, 39, 86, 110]
+  , [53, 58, 67, 72]
+  , [61, 62, 63, 64]
+  , [23, 43, 82, 102]
+  , [51, 57, 68, 74]
+  , [3, 33, 92, 122]
+  , [55, 59, 66, 70]
+  , [11, 37, 88, 114]
+  , [13, 38, 87, 112]
+  ]
 
 -- ------------------------------------------------------------------------
 
