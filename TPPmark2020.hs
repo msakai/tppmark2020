@@ -228,13 +228,6 @@ encodeQ3GCNF n points = runST $ do
   let isWhite :: Map Point SAT.Var
       isWhite = Map.fromList $ zip points vsWhite
 
-  -- c’) There exists at least one set of n vectors in the set that are mutually orthogonal to each other.
-  vsT <- forM (orthogonal_tuples n points) $ \ps -> do
-    v <- SAT.newVar db
-    forM_ ps $ \p -> SAT.addClause db [-v, isX ! p]
-    return (ps, v)
-  SAT.addClause db (map snd vsT)
-
   -- a) Whenever two of the vectors are orthogonal, at least one is black.
   forM_ (orthogonal_pairs points) $ \(p1,p2) -> do
     SAT.addClause db [- (isX ! p1), - (isX ! p2), - (isWhite ! p1), - (isWhite ! p2)]
@@ -340,39 +333,39 @@ solveQ2MUS = do
 q2MCSes
  :: [IntSet]
 q2MCSes = map IntSet.fromList $
-  [ [27, 98]
-  , [41, 84]
-  , [19, 106]
-  , [17, 108]
+  [ [56, 69]
+  , [12, 113]
   , [49, 76]
-  , [35, 90]
-  , [31, 94]
+  , [8, 117]
+  , [47, 78]
+  , [41, 84]
   , [29, 96]
   , [45, 80]
   , [7, 118]
-  , [47, 78]
+  , [31, 94]
+  , [27, 98]
+  , [35, 90]
+  , [19, 106]
   , [9, 116]
-  , [56, 69]
-  , [28, 97]
-  , [14, 111]
-  , [40, 85]
-  , [48, 77]
-  , [18, 107]
-  , [12, 113]
-  , [60, 65]
-  , [54, 71]
   , [52, 73]
+  , [54, 71]
+  , [17, 108]
+  , [48, 77]
+  , [40, 85]
   , [36, 89]
-  , [8, 117]
-  , [15, 39, 86, 110]
-  , [53, 58, 67, 72]
+  , [14, 111]
+  , [60, 65]
+  , [18, 107]
+  , [28, 97]
   , [61, 62, 63, 64]
+  , [53, 58, 67, 72]
+  , [15, 39, 86, 110]
+  , [13, 38, 87, 112]
+  , [11, 37, 88, 114]
   , [23, 43, 82, 102]
   , [51, 57, 68, 74]
   , [3, 33, 92, 122]
   , [55, 59, 66, 70]
-  , [11, 37, 88, 114]
-  , [13, 38, 87, 112]
   ]
 
 -- ------------------------------------------------------------------------

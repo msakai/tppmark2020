@@ -92,22 +92,27 @@ Totalizer符号化[1]による基数制約の符号化、Tseitin符号化[2][3]�
 
 #### MUSを用いた最適性の照明
 
-以下のような制約条件からなる節グループの集まりを考える。
+以下のような節グループの集まりを考える。
 
-* D:
-  * a(X', white)
-  * b(X', white)
-  * c(X')
-* グループ G_i:
-  * X'(p_i)
+* グループ D = CNF(a(X', white) ∧ b(X', white))
+* グループ G<sub>p</sub> = {X'(p)} for p ∈ X
 
-G = {G_i}_i の部分集合 G' ⊆ G で D ∪ ⋃G' が充足不能なものを、group oriented US (Unsatisfiable Subset) と呼ぶ。
-これは X'⊆X で D が充足不能であるものに対応する。
-c(X') が充足不能なものも含まれてしまうが、問題の条件を満たす X' は group oriented US に含まれる。
+G = {G<sub>p</sub>}<sub>p∈X</sub> の部分集合 G' ⊆ G で D ∪ ⋃G' が充足不能なものを、この問題の Group oriented Unsatisfiable Subset (GUS) と呼ぶ。
 
-したがって、group oriented US のうち極小なもの、すなわち group oriented MUS [4] をすべて求め、それらがすべて33以上のサイズであれば、上述の |X'| = 33 が最適解であることがわかる。
+すると、
 
-そこで、 CAMUS アルゴリズム[5]を用いて MUS のハイパーグラフ双対である　MCS (Minimal Correction Subset) を列挙する。
+* {X' ⊆ X | c(X') ∧ (∀white. ¬a(X', white) ∨ ¬b(X', white))}
+* = {X' ⊆ X | c(X') ∧ ¬(∃white. a(X', white) ∧ b(X', white))}
+* ⊆ {X' ⊆ X | ¬(∃white. a(X', white) ∧ b(X', white))}
+* = {X' ⊆ X | ∀X''⊆X. X' ⊆ X'' ⇒ ¬(∃white. a(X'', white) ∧ b(X'', white))}
+* = {X' ⊆ X | D ∪ ⋃{G<sub>p</sub>}<sub>p∈X'</sub> is UNSAT}.
+* = {X' ⊆ X | {G<sub>p</sub>}<sub>p∈X'</sub> is GUS}.
+
+のように、問題の条件を満たす X' の集合は GUS の条件を満たす X' の集合に包含されるため、 GUS のサイズがすべて33以上であれば、上述の |X'| = 33 が最適解であることがわかる。
+
+また、GUS すべてについて確認せずとも、GUS のうち極小なものである Group oriented Minimal Unsatisfiable Subset (GMUS) [4] についてのみ確認すれば十分である。
+
+そこで、まず CAMUS アルゴリズム[5]を用いて MUS のハイパーグラフ双対である MCS (Minimal Correction Subset) を列挙する。
 
 * GCNF形式ファイル: [Q2.gcnf](Q2.gcnf)
 * 実行ログ: [Q2_toysat_mcs.txt](Q2_toysat_mcs.txt)
